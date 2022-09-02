@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Pengaturan Awal -->
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Bontang Kota Lengkap</title>
+    </head>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css"/>
+    <script src="https://js.arcgis.com/4.24/"></script>
+    <script>src="https://code.jquery.com/jquery-3.6.1.min.js"</script>
+    <!-- Setting Halaman Full Screen -->
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #viewDiv_Vektor {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #layerToggle {
+        bottom: -95%;
+        left: 30px;
+        position:absolute;
+        z-index: 99;
+        background-color: white;
+        border-radius: 8px;
+        padding: 10px;
+        opacity: 0.75;
+      }
+      #paneDiv {
+        position: fixed;
+        bottom: 100px;
+        width: 10%;
+        text-align: left;
+        background-color: transparent;
+        color: white;
+      }
+      #Kecamatan{
+        list-style: none;
+        display:inline-block;
+      }
+      #sidebar {
+        z-index: 99;
+        position: absolute;
+        top: 10px;
+        left: 60px;
+        height: 13%;
+        background: rgba(240, 248, 254, 0.5);
+        width: 320px;
+      }
+      #sidebar_kecamatan {
+        z-index: 99;
+        position: absolute;
+        top: 105%;
+        right: 60px;
+        height: 5%;
+        background: rgba(13, 13, 14, 0.5);
+        width: 450px;
+      }
+      #Tmenu1 {
+        z-index: 99;
+        position: absolute;
+        top: 5px;
+        left: 4px;
+        height: 10%;
+        background: rgba(240, 248, 254, 0);
+        width: 500px;
+        font-weight: bold;
+        font-size: large;
+        color: white;
+      }
+      #Tmenu2 {
+        z-index: 99;
+        position: absolute;
+        top: 5px;
+        left: 150px;
+        height: 10%;
+        background: rgba(240, 248, 254, 0);
+        width: 500px;
+        font-weight: bold;
+        font-size: large;
+        color: white;
+      }
+      #Tmenu3 {
+        z-index: 99;
+        position: absolute;
+        top: 5px;
+        left: 300px;
+        height: 10%;
+        background: rgba(240, 248, 254, 0);
+        width: 500px;
+        font-weight: bold;
+        font-size: large;
+        color: white;
+      }
+      #Isi_Kecamatan_BB {
+        z-index: 99;
+        position: absolute;
+        top: 40px;
+        left: 4px;
+        height: 10%;
+        background: rgba(240, 248, 254, 0);
+        width: 500px;
+        color: white;
+      }
+      #Isi_Kecamatan_BU {
+        z-index: 99;
+        position: absolute;
+        top: 40px;
+        left: 150px;
+        height: 10%;
+        background: rgba(240, 248, 254, 0);
+        width: 500px;
+        color: white;
+      }
+      #Isi_Kecamatan_BS {
+        z-index: 99;
+        position: absolute;
+        top: 40px;
+        left: 300px;
+        height: 10%;
+        background: rgba(240, 248, 254, 0);
+        width: 500px;
+        color: white;
+      }
+    </style>
+    <!-- Mulai Coding Javascript -->
+    <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/GeoJSONLayer",
+      "esri/geometry/SpatialReference",
+      "esri/widgets/Legend",
+      "esri/widgets/Expand"
+    ],(
+      Map,
+      MapView,
+      GeoJSONLayer,
+      SpatialReference,
+      Legend,
+      Expand
+    )=>{
+      //Membuat Pop-Up Template Tiap Persil
+      const popupLayer_persil = {
+          title : "NIB {NIB}",
+          content : "<li><b>Kelurahan</b> : {KELURAHAN}</li>"+
+                    "<li><b>Kecamatan</b> : {KECAMATAN}</li>"+
+                    "<li><b>Status</b> : {Keterangan}</li>"+
+                    "<li><b>Luas</b> : {LUASPETA}</li>"
+        };
+      const popupLayer_landmark = {
+          title : "{Keterangan}",
+          content: "<img src='{Foto}'>"
+        };
+      //Membuat Pop-Up Template Spasial Statistik
+      const TUT = {
+        title: "{Kelurahan}",
+        content:[
+          {
+            type: "media",
+            mediaInfos: [
+              {
+                title: "Persentase Luas Bidang Tanah",
+                type: "pie-chart",
+                value: {
+                  fields: ["L_Sertipik", "L_K3", "L_NIS"]
+                }
+              }
+            ]
+          },
+          {
+            type: "media",
+            mediaInfos: [
+              {
+                title: "Jumlah Bidang Tanah",
+                type: "line-chart",
+                value: {
+                  fields: ["P_Sertipik", "P_K3", "P_NIS"]
+                }
+              }
+            ]
+          }]};
+      //Membuat Label Class Batas Administrasi
+      const labelClass = {
+        symbol: {
+          type: "text",
+          color: "black",
+          font: {
+            family: "Avenir Next LT Pro Regular",
+            size: 12,
+            weight: "bold"
+          }
+        },
+        labelPlacement: "above-center",
+        labelExpressionInfo: {
+          expression: "$feature.Kelurahan"
+        },
+        minScale: 50000,
+        maxScale: 0
+      };
+      //Membuat Label Class Landmark Point
+      const labelClass_Landmark = {
+        symbol: {
+          type: "text",
+          color: "black",
+          font: {
+            family: "Avenir Next LT Pro Regular",
+            size: 8,
+            weight: "normal"
+          }
+        },
+        labelPlacement: "above-center",
+        labelExpressionInfo: {
+          expression: "$feature.Keterangan"
+        },
+        minScale: 50000,
+        maxScale: 0
+      };
+      //Buat Simbol Batas Admin Vektor
+      const defaultSym2 = {
+          type: "simple-fill",
+          color:[232, 217, 40, 0],
+          outline: {
+            color: [77, 76, 75, 1],
+            width: "2px",
+            style: "short-dash-dot-dot"
+          }};
+      const renderer3 = {
+          type: "simple",
+          title:"Batas Administrasi",
+          symbol: defaultSym2}
+      //Buat Simbologi Batas Admin
+      const defaultSym = {
+          type: "simple-fill",
+          color:[232, 217, 40, 0.3],
+          outline: {
+            color: [232, 74, 40, 1],
+            width: "2px",
+            style: "short-dash-dot-dot"
+          }};
+      const renderer = {
+          type: "simple",
+          title:"Batas Administrasi",
+          symbol: defaultSym}
+      //Buat Simbologi Persil Sebontang Abu Abu
+      const defaultSym1 = {
+          type: "simple-fill",
+          color:[232, 217, 40, 0],
+          outline: {
+            color: [170, 170, 170, 0.5],
+            width: "0.5px",
+            style: "solid"
+          }
+        };
+      const renderer1 = {
+          type: "simple",
+          title:"Batas Bidang Tanah",
+          symbol: defaultSym1}
+      // Buat Simbologi Persil Outline Aja
+      const defaultSym3 = {
+          type: "simple-fill",
+          color:[232, 217, 40, 0],
+          outline: {
+            color: [255, 195, 0, 1],
+            width: "0.5px",
+            style: "solid"
+          }
+        };
+      const renderer4 = {
+          type: "simple",
+          tittle:"Batas Bidang Tanah",
+          symbol: defaultSym3}
+      //Buat Simbologi Landmark
+      const simbol_landmark = {
+          type: "simple-fill",
+          color:[94,246,245, 0.2],
+          outline: {
+            color: [0, 0, 0, 0.8],
+            width: "0.5px",
+            style: "solid"
+          }
+        };
+      const renderer_landmark = {
+          type: "simple",
+          tittle:"Landmark",
+          symbol: simbol_landmark};
+      // Buat Simbologi Persil Sebontang Vektor
+      const renderer2 = {
+        type: "unique-value",
+        legendOptions: {
+        title: "Keterangan Persil"},
+        field: "Keterangan",
+        uniqueValueInfos: [
+          {value: "Bidang Tanah Terdaftar",
+          symbol: {
+              type: "simple-fill",
+              color: "#ffd966",
+              outline:{
+                color: [170, 170, 170, 1],
+                width: "0.3px",
+                style: "solid"}
+          }},
+          {value: "Bidang Tanah Terdaftar Belum Sertipikat",
+          symbol: {
+              type: "simple-fill",
+              color: "#c27ba0",
+              outline:{
+                color: [170, 170, 170, 1],
+                width: "0.3px",
+                style: "solid"}
+          }},
+          {value: "Sungai",
+          symbol: {
+              type: "simple-fill",
+              color: "#6fa8dc",
+              outline:{
+                color: [170, 170, 170, 1],
+                width: "0.3px",
+                style: "solid"}
+          }},
+          {value: "Hutan",
+          symbol: {
+              type: "simple-fill",
+              color: "#93c47d",
+              outline:{
+                color: [170, 170, 170, 1],
+                width: "0.3px",
+                style: "solid"}
+          }},
+          {value: "Bidang NIS (Deliniasi) Non Geografis",
+          symbol: {
+              type: "simple-fill",
+              color: "#bec8b5",
+              outline:{
+                color: [170, 170, 170, 1],
+                width: "0.3px",
+                style: "solid"}
+          }},
+          {value: "Jalan",
+          symbol: {
+              type: "simple-fill",
+              color: "#e06666",
+              outline:{
+                color: [170, 170, 170, 1],
+                width: "0.3px",
+                style: "solid"}
+          }}
+          ]};
+      // Buat Layer Geojson Batas Administrasi
+      const geojsonlayer = new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Batas_Administrasi_Kota_Bontang.geojson",
+        labelingInfo:labelClass,
+        popupTemplate:TUT,
+        renderer:renderer
+      });
+      // Buat Layer Persil Abu-abu Sebontang
+      const persil_sebontang=new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Bidang_Tanah_Sebontang.geojson",
+        renderer:renderer1
+      });
+      //Buat Layer Persil Vektor Sebontang
+      const persil_sebontang_vektor=new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Bidang_Tanah_Sebontang.geojson",
+        outFields: ["Keterangan"],
+        popupTemplate:popupLayer_persil,
+        renderer:renderer2
+      });
+      // Buat Layer Persil Outline Aja
+      const persil_outline=new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Bidang_Tanah_Sebontang.geojson",
+        outFields: ["Keterangan"],
+        popupTemplate:popupLayer_persil,
+        renderer:renderer4
+      });
+      // Buat Layer Administrasi Vektor
+      const administrasi_vektor=new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Batas_Administrasi_Kota_Bontang.geojson",
+        labelingInfo:labelClass,
+        popupEnable:false,
+        renderer:renderer3
+      });
+      // Buat Layer Landmark
+      const layer_landmark=new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Landmark.geojson",
+        renderer:renderer_landmark
+      });
+      // Buat Layer Landmark Point
+      const layer_landmark_point=new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Landmark_Point.geojson",
+        popupTemplate : popupLayer_landmark,
+        labelingInfo:labelClass_Landmark
+      });
+      // Insert Basemap
+      const map = new Map({
+        basemap:"streets-relief-vector"
+      });
+      map.add(persil_sebontang);
+      map.add(geojsonlayer);
+      map.add(layer_landmark);
+      map.add(layer_landmark_point);
+      const map_Vektor = new Map({
+        basemap:"satellite"
+      });
+      map_Vektor.add(persil_outline);
+      map_Vektor.add(persil_sebontang_vektor);
+      map_Vektor.add(administrasi_vektor);
+      // Menampilkan Map ke Bodi HTML
+      const View = new MapView({
+        container: "viewDiv",
+        map: map,
+        zoom:12,
+        center:[117.46917675050003,0.11673644470944267]
+      });
+      const View_Vektor = new MapView({
+        container: "viewDiv_Vektor",
+        map: map_Vektor,
+        zoom:12,
+        center:[117.46917675050003,0.11673644470944267]
+      });
+      // Setting Toggle Widget Visible Layer
+      const streetsLayerToggle = document.getElementById("LayerBidang");
+      streetsLayerToggle.addEventListener("change", () => {
+          persil_sebontang_vektor.visible = streetsLayerToggle.checked;
+      });
+      // Legend Muka Peta 1
+      const legend = new Expand({
+          content: new Legend({
+            view: View,
+            style: "classic", // other styles include 'classic/classic'
+            layerInfos: [
+              {
+                layer: persil_sebontang,
+                title: "Bidang Tanah"
+              },
+              {
+                layer: geojsonlayer,
+                title: "Batas Administrasi"
+              },
+              {
+                layer: layer_landmark,
+                title: "Bidang Tanah Landmark"
+              },
+              {
+                layer: layer_landmark_point,
+                title: "Titik Landmark"
+              }
+            ],
+          view: View,
+          expanded: false,
+      })});
+        View.ui.add(legend, "bottom-right");
+      // Legend Muka Peta 2
+      const legend2 = new Expand({
+          content: new Legend({
+            view: View_Vektor,
+            style: "classic" // other styles include 'classic/classic'
+          }),
+          view: View_Vektor,
+          expanded: false,
+      });
+        View_Vektor.ui.add(legend2, "bottom-right");
+      let highlightSelect;
+      document.getElementById("Belimbing").addEventListener("click", () => {
+        View_Vektor.goTo({
+          center: [117.46917675050003,0.11673644470944267],
+          zoom: 20
+        }); 
+      });
+      // ----------------------------------
+
+    });
+    </script>
+    <!-- Bodi 1 Halaman HTML -->
+    <body>
+        <div id="viewDiv"></div>
+        <div id="sidebar" class="esri-widget">
+          <div id="text">
+            <center> <img src="Foto/LogoBPN.png" alt="logo" width="60" height="60" style="float:left">
+            <h1>Peta Kota Lengkap</h1>
+            <p>Kantor Pertanahan Kota Bontang.</p>
+          </div>
+        </div>
+    </body>
+    <!-- Bodi 1 Halaman HTML -->
+    <body>
+      <div id="viewDiv_Vektor"></div>
+      <span id="layerToggle" class="esri-widget">
+        <input type="checkbox" id="LayerBidang" /> Bidang Tanah
+      </span>
+    </body>
+</html>

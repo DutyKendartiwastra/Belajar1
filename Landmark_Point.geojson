@@ -1,0 +1,15 @@
+{
+"type": "FeatureCollection",
+"name": "Landmark_Point",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Id": 0, "Keterangan": "PT Pupuk Kaltim", "kelurahan": "Guntung", "ORIG_FID": 0, "Foto": "https:\/\/raw.githubusercontent.com\/DutyKendartiwastra\/Belajar1\/main\/Foto\/PKT.jpg" }, "geometry": { "type": "Point", "coordinates": [ 117.483562299466485, 0.181825090589427 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Keterangan": "Kantor Pertanahan Kota Bontang", "kelurahan": "Lok Tuan", "ORIG_FID": 1, "Foto": "https:\/\/raw.githubusercontent.com\/DutyKendartiwastra\/Belajar1\/main\/Foto\/Kantor.JPG" }, "geometry": { "type": "Point", "coordinates": [ 117.467957992578476, 0.16487315625352 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Keterangan": "PT Badak LNG", "kelurahan": "Satimpo", "ORIG_FID": 2, "Foto": "https:\/\/raw.githubusercontent.com\/DutyKendartiwastra\/Belajar1\/main\/Foto\/PT%20Badak.jpg" }, "geometry": { "type": "Point", "coordinates": [ 117.467282180718939, 0.111453152698061 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Keterangan": "Taman Wisata Hutan Mangrove", "kelurahan": "Bontang Kuala", "ORIG_FID": 3, "Foto": "https:\/\/raw.githubusercontent.com\/DutyKendartiwastra\/Belajar1\/main\/Foto\/Mangrove.jpeg" }, "geometry": { "type": "Point", "coordinates": [ 117.497927809468592, 0.144644694748877 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Keterangan": "Masjid Terapung AL-Muhajirin", "kelurahan": "Lok Tuan", "ORIG_FID": 4, "Foto": "https:\/\/raw.githubusercontent.com\/DutyKendartiwastra\/Belajar1\/main\/Foto\/Masjid%20Terapung.jpg" }, "geometry": { "type": "Point", "coordinates": [ 117.488606165689248, 0.166735183886374 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Keterangan": "Polsek Bontang Utara", "kelurahan": "Gunung Elai", "ORIG_FID": 5, "Foto": "https:\/\/raw.githubusercontent.com\/DutyKendartiwastra\/Belajar1\/main\/Foto\/Polsek.jpeg" }, "geometry": { "type": "Point", "coordinates": [ 117.489067712574752, 0.140387183458984 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Keterangan": "Kantor Walikota", "kelurahan": "Bontang Lestari", "ORIG_FID": 6, "Foto": "https:\/\/raw.githubusercontent.com\/DutyKendartiwastra\/Belajar1\/main\/Foto\/Pemkot.jpg" }, "geometry": { "type": "Point", "coordinates": [ 117.444003107329081, 0.068012455000996 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Keterangan": "Kawasan APL Eks Hutan Lindung", "kelurahan": "Kanaan", "ORIG_FID": 7, "Foto": "https:\/\/raw.githubusercontent.com\/DutyKendartiwastra\/Belajar1\/main\/Foto\/Kawasan%20APL.JPG" }, "geometry": { "type": "Point", "coordinates": [ 117.439849216372977, 0.124639682147233 ] } }
+]
+}
