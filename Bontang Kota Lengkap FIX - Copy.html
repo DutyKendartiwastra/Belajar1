@@ -168,10 +168,16 @@
                     "<li><b>Kawasan</b> : {Hirarki_3}</li>"+
                     "<li><b>Nilai Tanah</b> : {RPBULAT}</li>"  
         };
+      // Pop-up Template Landmark
       const popupLayer_landmark = {
           title : "{Keterangan}",
           content: "<img src='{Foto}'>"
         };
+      // Pop Up Template HP01
+      const popup_sengketa = {
+        tittle :"Sengketa",
+        content : "<li><b>Keteranagan<b> : </li>"
+      };
       //Membuat Pop-Up Template Spasial Statistik
       const TUT = {
         title: "{Kelurahan}",
@@ -281,6 +287,20 @@
           type: "simple",
           title:"Batas Bidang Tanah",
           symbol: defaultSym1}
+      // Simbologi Sengketa
+      const simbol_sengketa = {
+          type: "simple-fill",
+          color:[232, 217, 40, 0],
+          outline: {
+            color: [252, 6, 6, 1],
+            width: "2px",
+            style: "solid"
+          }
+        };
+      const renderer_sengekta = {
+          type: "simple",
+          title:"Batas Bidang Tanah",
+          symbol: simbol_sengketa}
       // Buat Simbologi Persil Outline Aja
       const defaultSym3 = {
           type: "simple-fill",
@@ -390,6 +410,12 @@
         popupTemplate:TUT,
         renderer:renderer
       });
+      // Buat Layer Sengketa HP01
+      const sengketa=new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Sengketa/HP01/HP01.geojson",
+        popupTemplate:popup_sengketa,
+        renderer:renderer_sengekta
+      });
       // Buat Layer Persil Abu-abu Sebontang
       const persil_sebontang=new GeoJSONLayer({
         url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Bidang_Tanah_Sebontang.geojson",
@@ -440,6 +466,7 @@
         basemap:"satellite"
       });
       map_Vektor.add(persil_outline);
+      map_Vektor.add(sengketa);
       map_Vektor.add(persil_sebontang_vektor);
       map_Vektor.add(administrasi_vektor);
       // Menampilkan Map ke Bodi HTML
@@ -459,6 +486,11 @@
       const streetsLayerToggle = document.getElementById("LayerBidang");
       streetsLayerToggle.addEventListener("change", () => {
           persil_sebontang_vektor.visible = streetsLayerToggle.checked;
+      });
+      // Setting Toggle Widget Visible Layer Sengketa
+      const streetsLayerToggle1 = document.getElementById("LayerSengketa");
+      streetsLayerToggle1.addEventListener("change", () => {
+          sengketa.visible = streetsLayerToggle1.checked;
       });
       // North Arrow Compass
       const compass = new Compass({
@@ -552,6 +584,7 @@
       <div id="viewDiv_Vektor"></div>
       <span id="layerToggle" class="esri-widget">
         <input type="checkbox" id="LayerBidang" /> Bidang Tanah
+        <input type="checkbox" id="LayerSengketa" /> Sengketa
       </span>
     </body>
 </html>
