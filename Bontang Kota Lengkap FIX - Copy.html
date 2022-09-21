@@ -175,8 +175,12 @@
         };
       // Pop Up Template HP01
       const popup_sengketa = {
-        tittle :"Sengketa",
-        content : "<li><b>Keteranagan<b> : </li>"
+        title :"Bidang Tanah Sengketa",
+        content : "<li><b>Kelurahan</b> : {KELURAHAN}</li>"+
+                  "<li><b>Kecamatan</b> : {KECAMATAN}</li>"+
+                  "<li><b>Jenis Hak</b> : Hak Pakai 01</li>"+
+                  "<li><b>Pemilik Tanah</b> : PT.Pupuk Kalimantan Timur</li>"+
+                  "<li><b>Jumlah Bidang IP4T</b> : 348 Bidang Tanah</li>"
       };
       //Membuat Pop-Up Template Spasial Statistik
       const TUT = {
@@ -293,14 +297,28 @@
           color:[232, 217, 40, 0],
           outline: {
             color: [252, 6, 6, 1],
-            width: "2px",
-            style: "solid"
+            width: "3px",
+            style: "short-dash-dot-dot"
           }
         };
       const renderer_sengekta = {
           type: "simple",
-          title:"Batas Bidang Tanah",
+          title:"Tanah Sengketa",
           symbol: simbol_sengketa}
+      // Simbologi IP4T
+      const simbol_IP4T = {
+          type: "simple-fill",
+          color:[232, 217, 40, 0],
+          outline: {
+            color: [231, 152, 228, 1],
+            width: "1px",
+            style: "solid"
+          }
+        };
+      const renderer_IP4T = {
+          type: "simple",
+          title:"IP4T HP01",
+          symbol: simbol_IP4T}
       // Buat Simbologi Persil Outline Aja
       const defaultSym3 = {
           type: "simple-fill",
@@ -416,6 +434,11 @@
         popupTemplate:popup_sengketa,
         renderer:renderer_sengekta
       });
+      // Buat Layer Sengketa IP4T
+      const IP4T=new GeoJSONLayer({
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Sengketa/IP4T%20HP01/IP4T.geojson",
+        renderer:renderer_IP4T
+      });
       // Buat Layer Persil Abu-abu Sebontang
       const persil_sebontang=new GeoJSONLayer({
         url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Bidang_Tanah_Sebontang.geojson",
@@ -466,6 +489,7 @@
         basemap:"satellite"
       });
       map_Vektor.add(persil_outline);
+      map_Vektor.add(IP4T);
       map_Vektor.add(sengketa);
       map_Vektor.add(persil_sebontang_vektor);
       map_Vektor.add(administrasi_vektor);
@@ -561,6 +585,14 @@
                 layer: administrasi_vektor,
                 title: "Batas Administrasi"
               },
+              {
+                layer: IP4T,
+                title: "Sketsa Bidang Tanah IP4T"
+              },
+              {
+                layer:sengketa,
+                title:"Batas Bidang Tanah Sengketa"
+              }
             ],
           view: View_Vektor,
           expanded: false,
