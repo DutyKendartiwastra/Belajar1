@@ -453,7 +453,7 @@
       });
       // Buat Layer Persil Outline Aja
       const persil_outline=new GeoJSONLayer({
-        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Bidang_Tanah_Sebontang.geojson",
+        url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Persil_Bontang_ZNT_RDTR2022.geojson",
         outFields: ["Keterangan"],
         popupTemplate:popupLayer_persil,
         renderer:renderer4
@@ -515,6 +515,7 @@
       const streetsLayerToggle1 = document.getElementById("LayerSengketa");
       streetsLayerToggle1.addEventListener("change", () => {
           sengketa.visible = streetsLayerToggle1.checked;
+          IP4T.visible = streetsLayerToggle1.checked;
       });
       // North Arrow Compass
       const compass = new Compass({
