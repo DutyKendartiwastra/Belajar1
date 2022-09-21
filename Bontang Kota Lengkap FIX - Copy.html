@@ -396,7 +396,7 @@
           {value: "Hak Wakaf",
           symbol: {
               type: "simple-fill",
-              color: "#8e929b",
+              color: "#23fbe5",
               outline:{
                 color: [170, 170, 170, 1],
                 width: "0.3px",
@@ -516,9 +516,9 @@
         basemap:"satellite"
       });
       map_Vektor.add(persil_outline);
+      map_Vektor.add(persil_sebontang_vektor);
       map_Vektor.add(IP4T);
       map_Vektor.add(sengketa);
-      map_Vektor.add(persil_sebontang_vektor);
       map_Vektor.add(administrasi_vektor);
       // Menampilkan Map ke Bodi HTML
       const View = new MapView({
@@ -533,7 +533,7 @@
         zoom:12,
         center:[117.46917675050003,0.11673644470944267]
       });
-      // Setting Toggle Widget Visible Layer
+      // Setting Toggle Widget Visible Vektor
       const streetsLayerToggle = document.getElementById("LayerBidang");
       streetsLayerToggle.addEventListener("change", () => {
           persil_sebontang_vektor.visible = streetsLayerToggle.checked;
@@ -544,7 +544,11 @@
       streetsLayerToggle1.addEventListener("change", () => {
           sengketa.visible = streetsLayerToggle1.checked;
           IP4T.visible = streetsLayerToggle1.checked;
-          persil_outline.visible = false;
+      });
+      // Setting Toggle Widget Visible Layer Raster
+      const streetsLayerToggle2 = document.getElementById("LayerRaster");
+      streetsLayerToggle2.addEventListener("change", () => {
+          persil_outline.visible = streetsLayerToggle2.checked;
       });
       // North Arrow Compass
       const compass = new Compass({
@@ -645,7 +649,8 @@
     <body>
       <div id="viewDiv_Vektor"></div>
       <span id="layerToggle" class="esri-widget">
-        <input type="checkbox" id="LayerBidang" /> Bidang Tanah
+        <input type="checkbox" id="LayerBidang" /> Vektor
+        <input type="checkbox" id="LayerRaster" /> Raster
         <input type="checkbox" id="LayerSengketa" /> Sengketa
       </span>
     </body>
