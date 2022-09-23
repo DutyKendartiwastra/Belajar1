@@ -165,7 +165,7 @@
                     "<li><b>Kecamatan</b> : {KECAMATAN}</li>"+
                     "<li><b>Status</b> : {Keterangan}</li>"+
                     "<li><b>Luas</b> : {LUASTERTUL} meter persegi </li>"+
-                    "<li><b>Kawasan</b> : {Hirarki_3}</li>"+
+                    "<li><b>Tata Ruang</b> : {Hirarki_3}</li>"+
                     "<li><b>Nilai Tanah</b> : {RPBULAT}</li>"  
         };
       // Pop-up Template Landmark
@@ -320,19 +320,94 @@
           title:"IP4T HP01",
           symbol: simbol_IP4T}
       // Buat Simbologi Persil Outline Aja
-      const defaultSym3 = {
-          type: "simple-fill",
-          color:[232, 217, 40, 0],
-          outline: {
-            color: [255, 195, 0, 1],
-            width: "0.5px",
-            style: "solid"
-          }
-        };
-      const renderer4 = {
-          type: "simple",
-          tittle:"Batas Bidang Tanah",
-          symbol: defaultSym3}
+      const renderer_outline = {
+        type: "unique-value",
+        legendOptions: {
+        title: "Keterangan Persil"},
+        field: "Keterangan",
+        uniqueValueInfos: [
+          {value: "Hak Milik",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#f9f267",
+                width: "1px",
+                style: "solid"}
+          }},
+          {value: "Hak Guna Bangunan",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#e1c5ab",
+                width: "1px",
+                style: "solid"}
+          }},
+          {value: "Hak Pakai",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#fbe0d9",
+                width: "1px",
+                style: "solid"}
+          }},
+          {value: "Hak Wakaf",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#23fbe5",
+                width: "1px",
+                style: "solid"}
+          }},
+          {value: "Bidang Tanah Terdaftar Belum Sertipikat",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#c27ba0",
+                width: "1px",
+                style: "solid"}
+          }},
+          {value: "Sungai",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#6fa8dc",
+                width: "1px",
+                style: "solid"}
+          }},
+          {value: "Hutan",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#93c47d",
+                width: "1px",
+                style: "solid"}
+          }},
+          {value: "Bidang NIS (Deliniasi) Non Geografis",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#bec8b5",
+                width: "1px",
+                style: "solid"}
+          }},
+          {value: "Jalan",
+          symbol: {
+              type: "simple-fill",
+              color: [0, 0, 0, 0],
+              outline:{
+                color: "#e06666",
+                width: "1px",
+                style: "solid"}
+          }}
+          ]};
       //Buat Simbologi Landmark
       const simbol_landmark = {
           type: "simple-fill",
@@ -378,7 +453,7 @@
           {value: "Hak Guna Bangunan",
           symbol: {
               type: "simple-fill",
-              color: "#e1c5ab",
+              color: "#E7A265",
               outline:{
                 color: [170, 170, 170, 1],
                 width: "0.3px",
@@ -483,7 +558,7 @@
         url:"https://raw.githubusercontent.com/DutyKendartiwastra/Belajar1/main/Persil_Bontang_ZNT_RDTR2022.geojson",
         outFields: ["Keterangan"],
         popupTemplate:popupLayer_persil,
-        renderer:renderer4
+        renderer:renderer_outline
       });
       // Buat Layer Administrasi Vektor
       const administrasi_vektor=new GeoJSONLayer({
